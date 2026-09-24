@@ -1,35 +1,85 @@
-/* Высота и удобство редактора в админке Wagtail */
-.w-field--prose_editor_field .ProseMirror,
-.prose-editor .ProseMirror {
-    min-height: 250px !important;
-    font-size: 1rem;
-    line-height: 1.6;
-}
+/* ==========================================================================
+   WAGTAIL PROSE EDITOR — НАСТОЯЩИЙ НА ТЕМНЫЙ / СВЕТЛЫЙ ДИЗАЙН WAGTAIL
+   ========================================================================== */
 
-/* Выделение инлайн-кода */
-.ProseMirror code {
-    background: rgba(0, 0, 0, 0.08);
-    color: #c7254e;
-    padding: 2px 5px;
-    border-radius: 4px;
-    font-family: monospace;
-    font-size: 0.9em;
-}
-
-/* Выделение блока кода */
-.ProseMirror pre {
-    background: #1e1e1e !important;
-    color: #98c379 !important;
-    padding: 10px 14px !important;
+/* 1. Каркас редактора и высота */
+.prose-editor {
+    border: 1px solid var(--w-color-border-field-default) !important;
     border-radius: 6px !important;
-    font-family: monospace !important;
-    margin: 10px 0 !important;
-    overflow-x: auto;
+    overflow: hidden !important;
+    background: var(--w-color-surface-field) !important;
 }
 
-.ProseMirror pre code {
+.prose-editor .ProseMirror {
+    background: var(--w-color-surface-field) !important;
+    color: var(--w-color-text-context) !important;
+    padding: 12px 14px !important;
+    min-height: 250px !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+    outline: none !important;
+}
+
+/* 2. Панель инструментов (ToolBar) */
+.prose-editor .prose-menubar {
+    background: var(--w-color-surface-menus, var(--w-color-surface-field-hover)) !important;
+    border-bottom: 1px solid var(--w-color-border-field-default) !important;
+    padding: 6px !important;
+    gap: 3px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+
+/* 3. Кнопки панели */
+.prose-editor .prose-menubar__button {
+    background: transparent !important;
+    color: var(--w-color-text-context) !important;
+    border-radius: 4px !important;
+    border: none !important;
+    padding: 4px !important;
+    width: 28px !important;
+    height: 28px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    opacity: 0.8;
+}
+
+.prose-editor .prose-menubar__button:hover {
+    background: var(--w-color-surface-field-hover, rgba(255, 255, 255, 0.1)) !important;
+    opacity: 1 !important;
+}
+
+.prose-editor .prose-menubar__button.active {
+    background: var(--w-color-primary) !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* 4. Выделение кода внутри редактора */
+.prose-editor .ProseMirror code {
+    background: rgba(125, 125, 125, 0.2) !important;
+    color: var(--w-color-critical-200, #e06c75) !important;
+    padding: 2px 5px !important;
+    border-radius: 4px !important;
+    font-family: monospace !important;
+    font-size: 0.88em !important;
+}
+
+.prose-editor .ProseMirror pre {
+    background: #1a1a1a !important;
+    color: #98c379 !important;
+    border: 1px solid var(--w-color-border-field-default) !important;
+    border-radius: 5px !important;
+    padding: 10px 14px !important;
+    margin: 8px 0 !important;
+    font-family: monospace !important;
+    overflow-x: auto !important;
+}
+
+.prose-editor .ProseMirror pre code {
     background: transparent !important;
     color: inherit !important;
     padding: 0 !important;
 }
-
