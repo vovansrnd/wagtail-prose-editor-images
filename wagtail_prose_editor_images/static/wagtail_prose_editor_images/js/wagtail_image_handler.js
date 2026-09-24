@@ -1,10 +1,9 @@
 (function () {
   'use strict';
 
-  /* 1. Открытие стандартного Wagtail Image Chooser */
   function chooseImage() {
     return new Promise((resolve) => {
-      // Вызываем штатное модальное окно Wagtail без лишних параметров формата
+      // Вызываем штатный ModalWorkflow
       const wf = ModalWorkflow({
         url: '/admin/images/chooser/',
         onload: window.IMAGE_CHOOSER_MODAL_ONLOAD_HANDLERS || {},
@@ -12,8 +11,8 @@
 
       const origRespond = wf.respond.bind(wf);
       wf.respond = (step, data) => {
-        // Ловим успешный выбор или загрузку картинки
-        if (step === 'imageChosen' || step === 'chosen' || step === 'insertImage') {
+        // Ловим успешный выбор или создание изображения
+        if (step === 'chosen' || step === 'imageChosen' || step === 'insertImage') {
           resolve({ data: data, modal: wf.container });
         }
         return origRespond(step, data);
@@ -21,26 +20,27 @@
     });
   }
 
-  /* 2. Вставка изображения в TipTap / ProseMirror */
   async function insertImage(editor) {
     try {
-      const result = await chooseImage();
-      const data = result.data;
-      const modal = result.modal;
+      const response = await chooseImage();
+      const raw = response.data || {};
+      const modal = response.modal;
 
-      // Закрываем окно Wagtail Bootstrap Modal, если оно открыто
+      // Закрываем модальное окно Bootstrap/Wagtail
       if (modal && typeof modal.modal === 'function') {
         modal.modal('hide');
       }
 
-      // Получаем прямой URL и Alt текст
-      let src = data.preview?.url || data.url;
-      if (!src && data.html) {
-        const doc = new DOMParser().parseFromString(data.html, 'text/html');
+      // В Wagtail данные могут лежать в корне data или внутри data.result
+      const item = raw.result || raw;
+
+      let src = item.preview?.url || item.url;
+      if (!src && item.html) {
+        const doc = new DOMParser().parseFromString(item.html, 'text/html');
         src = doc.querySelector('img')?.getAttribute('src');
       }
 
-      const alt = data.alt || data.alt_text || data.title || '';
+      const alt = item.default_alt_text || item.alt || item.title || '';
 
       if (src) {
         editor
@@ -50,11 +50,10 @@
           .run();
       }
     } catch (err) {
-      console.error('Wagtail image insert error:', err);
+      console.error('Error inserting Wagtail image:', err);
     }
   }
 
-  /* 3. Кнопка на панели django-prose-editor */
   function addImageButton(wrapper) {
     const textarea = wrapper.querySelector('textarea');
     if (!textarea) return;
@@ -91,7 +90,6 @@
       }
     });
 
-    // Вставляем после группы списков или жирного
     const groups = menubar.querySelectorAll('.prose-menubar__group');
     if (groups.length >= 2) {
       groups[1].after(btn);
@@ -100,7 +98,6 @@
     }
   }
 
-  /* 4. Наблюдатель за появлением редакторов */
   document.addEventListener('DOMContentLoaded', () => {
     new MutationObserver(() => {
       document.querySelectorAll('.prose-editor').forEach(addImageButton);
@@ -109,4 +106,3 @@
     document.querySelectorAll('.prose-editor').forEach(addImageButton);
   });
 })();
-
