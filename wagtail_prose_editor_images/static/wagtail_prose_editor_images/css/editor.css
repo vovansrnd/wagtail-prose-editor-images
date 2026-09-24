@@ -1,0 +1,35 @@
+/* Высота и удобство редактора в админке Wagtail */
+.w-field--prose_editor_field .ProseMirror,
+.prose-editor .ProseMirror {
+    min-height: 250px !important;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Выделение инлайн-кода */
+.ProseMirror code {
+    background: rgba(0, 0, 0, 0.08);
+    color: #c7254e;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+/* Выделение блока кода */
+.ProseMirror pre {
+    background: #1e1e1e !important;
+    color: #98c379 !important;
+    padding: 10px 14px !important;
+    border-radius: 6px !important;
+    font-family: monospace !important;
+    margin: 10px 0 !important;
+    overflow-x: auto;
+}
+
+.ProseMirror pre code {
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0 !important;
+}
+

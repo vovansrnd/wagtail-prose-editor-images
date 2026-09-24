@@ -12,3 +12,11 @@ def insert_prose_editor_image_js():
         static("wagtail_prose_editor_images/js/wagtail_image_handler.js"),
     )
 
+
+@hooks.register("insert_global_admin_css")
+def insert_prose_editor_css():
+    return format_html(
+        '<link rel="stylesheet" href="{}">',
+        static("wagtail_prose_editor_images/css/editor.css"),
+    )
+
