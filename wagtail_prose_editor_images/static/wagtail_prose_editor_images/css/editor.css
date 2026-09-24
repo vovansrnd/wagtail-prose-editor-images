@@ -1,41 +1,64 @@
 /* ==========================================================================
-   WAGTAIL PROSE EDITOR — НАСТОЯЩИЙ НА ТЕМНЫЙ / СВЕТЛЫЙ ДИЗАЙН WAGTAIL
+   WAGTAIL PROSE EDITOR — СПОКОЙНЫЙ НЕЙТРАЛЬНЫЙ ДИЗАЙН (LIGHT & DARK)
    ========================================================================== */
 
-/* 1. Каркас редактора и высота */
+/* 1. Общий контейнер редактора */
 .prose-editor {
-    border: 1px solid var(--w-color-border-field-default) !important;
+    border: 1px solid var(--w-color-border-field-default, #ccc) !important;
     border-radius: 6px !important;
     overflow: hidden !important;
     background: var(--w-color-surface-field) !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Мягкая нейтральная рамка при фокусе без фиолетовых оттенков */
+.prose-editor:focus-within {
+    border-color: color-mix(in srgb, var(--w-color-text-context) 40%, var(--w-color-border-field-default)) !important;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--w-color-text-context) 20%, transparent) !important;
+}
+
+/* 2. Поле ввода текста (ProseMirror) */
 .prose-editor .ProseMirror {
     background: var(--w-color-surface-field) !important;
     color: var(--w-color-text-context) !important;
-    padding: 12px 14px !important;
-    min-height: 250px !important;
+    border-top: 1px solid var(--w-color-border-field-default) !important;
+    padding: 14px 16px !important;
+    min-height: 280px !important;
     font-size: 0.95rem !important;
-    line-height: 1.6 !important;
+    line-height: 1.65 !important;
     outline: none !important;
+    border: 1px solid var(--w-color-border-field-default) !important;
 }
 
-/* 2. Панель инструментов (ToolBar) */
+/* 3. Панель инструментов (ToolBar) */
 .prose-editor .prose-menubar {
-    background: var(--w-color-surface-menus, var(--w-color-surface-field-hover)) !important;
-    border-bottom: 1px solid var(--w-color-border-field-default) !important;
-    padding: 6px !important;
-    gap: 3px !important;
+    background: var(--w-color-surface-field) !important;
+    padding: 6px 8px !important;
     display: flex !important;
     flex-wrap: wrap !important;
+    gap: 4px !important;
+    align-items: center !important;
 }
 
-/* 3. Кнопки панели */
+.prose-editor .prose-menubar__group {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 2px !important;
+    border-right: 1px solid var(--w-color-border-field-default, #e5e7eb) !important;
+    padding-right: 6px !important;
+    margin-right: 2px !important;
+}
+
+.prose-editor .prose-menubar__group:last-child {
+    border-right: none !important;
+}
+
+/* 4. Кнопки на панели */
 .prose-editor .prose-menubar__button {
     background: transparent !important;
     color: var(--w-color-text-context) !important;
     border-radius: 4px !important;
-    border: none !important;
+    border: 1px solid transparent !important;
     padding: 4px !important;
     width: 28px !important;
     height: 28px !important;
@@ -43,38 +66,57 @@
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer !important;
+    font-size: 18px !important;
     opacity: 0.8;
+    transition: background-color 0.15s ease, opacity 0.15s ease, border-color 0.15s ease;
 }
 
-.prose-editor .prose-menubar__button:hover {
-    background: var(--w-color-surface-field-hover, rgba(255, 255, 255, 0.1)) !important;
+/* Наведение: фон плавно светлеет/темнеет в тон теме, цвет символа не слепнет */
+.prose-editor .prose-menubar__button:hover:not(.disabled) {
+    background: color-mix(in srgb, var(--w-color-text-context) 12%, transparent) !important;
+    color: var(--w-color-text-context) !important;
     opacity: 1 !important;
 }
 
+/* Активное состояние (нажатый жирный/курсив): спокойный серый акцент с мягкой рамкой */
 .prose-editor .prose-menubar__button.active {
-    background: var(--w-color-primary) !important;
-    color: #ffffff !important;
+    background: color-mix(in srgb, var(--w-color-text-context) 20%, transparent) !important;
+    border-color: color-mix(in srgb, var(--w-color-text-context) 30%, transparent) !important;
+    color: var(--w-color-text-context) !important;
     opacity: 1 !important;
 }
 
-/* 4. Выделение кода внутри редактора */
+.prose-editor .prose-menubar__button.disabled {
+    opacity: 0.25 !important;
+    cursor: not-allowed !important;
+}
+
+/* 5. Выпадающий список типов блоков */
+.prose-editor .prose-menubar__dropdown .prose-menubar__button {
+    width: auto !important;
+    padding: 2px 8px !important;
+    font-size: 13px !important;
+    font-weight: 500;
+}
+
+/* 6. Подсветка кода внутри редактора */
 .prose-editor .ProseMirror code {
-    background: rgba(125, 125, 125, 0.2) !important;
-    color: var(--w-color-critical-200, #e06c75) !important;
-    padding: 2px 5px !important;
+    background: color-mix(in srgb, var(--w-color-text-context) 12%, transparent) !important;
+    color: #e06c75 !important;
+    padding: 2px 6px !important;
     border-radius: 4px !important;
     font-family: monospace !important;
     font-size: 0.88em !important;
 }
 
 .prose-editor .ProseMirror pre {
-    background: #1a1a1a !important;
+    background: #181818 !important;
     color: #98c379 !important;
-    border: 1px solid var(--w-color-border-field-default) !important;
+    border: 1px solid var(--w-color-border-field-default, #333) !important;
     border-radius: 5px !important;
-    padding: 10px 14px !important;
-    margin: 8px 0 !important;
-    font-family: monospace !important;
+    padding: 12px 14px !important;
+    margin: 10px 0 !important;
+    font-family: 'Courier New', Monaco, monospace !important;
     overflow-x: auto !important;
 }
 
@@ -82,4 +124,12 @@
     background: transparent !important;
     color: inherit !important;
     padding: 0 !important;
+}
+
+.prose-menubar:not(:empty) {
+border-bottom: 1px solid var(--w-color-border-field-default) !important;
+}
+
+.prose-menubar__selected {
+  outline: 1px solid var(--w-color-border-field-default) !important;
 }
