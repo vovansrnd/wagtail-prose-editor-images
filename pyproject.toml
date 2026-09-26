@@ -1,6 +1,6 @@
 [project]
 name = "wagtail-prose-editor-images"
-version = "0.1.4"
+version = "0.2.1"
 description = "Wagtail Image Chooser integration for django-prose-editor."
 readme = "README.md"
 authors = [{ name = "Vladimir Tarasov" }]

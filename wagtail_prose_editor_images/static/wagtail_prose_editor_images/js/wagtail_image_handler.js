@@ -34,7 +34,7 @@
       // В Wagtail данные могут лежать в корне data или внутри data.result
       const item = raw.result || raw;
 
-      let src = item.preview?.url || item.url;
+      let src = item.url || item.download_url || item.preview?.url;
       if (!src && item.html) {
         const doc = new DOMParser().parseFromString(item.html, 'text/html');
         src = doc.querySelector('img')?.getAttribute('src');
