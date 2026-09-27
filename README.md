@@ -48,11 +48,14 @@ class MyPage(Page):
     )
 ```
 
-## Recommended Complementary Package
-Tired of dumping all uploaded images into a flat `media/original_images/` folder? Organize your media into clean `year/slug` directories:
-👉 **[wagtail-image-directories](https://github.com/vovansrnd/wagtail-image-directories)**
+## Recommended Complementary Packages
+- **[wagtail-image-directories](https://github.com/vovansrnd/wagtail-image-directories)**: Tired of dumping all uploaded images into a flat `media/original_images/` folder? Organize your media into clean `year/slug` directories on disk with an interactive visual navigator.
 
 ![Wagtail Image Navigator Dashboard](https://raw.githubusercontent.com/vovansrnd/wagtail-image-directories/main/navigator-preview.png)
+
+- **[wagtail-mptt-comments](https://github.com/vovansrnd/wagtail-mptt-comments)**: Add fast, hierarchical MPTT comment trees with multi-layer anti-spam defense (honeypot, timing, math captcha) and an AJAX admin moderation dashboard.
+
+![Wagtail Comments Tree Preview](https://raw.githubusercontent.com/vovansrnd/wagtail-mptt-comments/main/comments-tree-preview.png)
 
 ## Case Study & Background
 Read the full story behind the migration and architecture on our blog: [Vs-Svet.ru](https://vs-svet.ru/) / [ZenWay.ru](https://zenway.ru/).
