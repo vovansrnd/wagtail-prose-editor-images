@@ -2,11 +2,17 @@
 (function () {
   'use strict';
 
+  // URLs are injected by the wagtail_hooks.py hook so custom admin mounts work.
+  const CFG = window.WAGTAIL_PROSE_EDITOR_IMAGES || {
+    chooserUrl: '/admin/images/chooser/',
+    imageUrl: '/admin/prose-editor-images/api/image-url/__IMAGE_ID__/',
+  };
+
   /* 1. Открытие Wagtail Image Chooser модалки */
   function chooseImage() {
     return new Promise((resolve) => {
       const wf = ModalWorkflow({
-        url: '/admin/images/chooser/',
+        url: CFG.chooserUrl,
         onload: window.IMAGE_CHOOSER_MODAL_ONLOAD_HANDLERS || {},
       });
 
@@ -14,6 +20,8 @@
       wf.respond = (step, data) => {
         if (step === 'chosen' || step === 'imageChosen' || step === 'insertImage') {
           resolve({ data: data, modal: wf.container });
+        } else if (step === 'closed' || step === 'cancel') {
+          resolve(null);
         }
         return origRespond(step, data);
       };
@@ -24,6 +32,8 @@
   async function insertImage(editor) {
     try {
       const response = await chooseImage();
+      if (!response) return; // модалку закрыли без выбора
+
       const raw = response.data || {};
       const modal = response.modal;
 
@@ -39,7 +49,7 @@
       // 1. Запрашиваем НАСТОЯЩИЙ оригинальный URL картинки из API по ее ID
       if (imageId) {
         try {
-          const res = await fetch(`/admin/prose-editor-images/api/image-url/${imageId}/`);
+          const res = await fetch(CFG.imageUrl.replace("__IMAGE_ID__", encodeURIComponent(imageId)));
           const data = await res.json();
           if (data.success && data.url) {
             finalUrl = data.url;
@@ -53,10 +63,6 @@
       // 2. Фолбэк, если эндпоинт недоступен
       if (!finalUrl) {
         finalUrl = item.url || item.download_url || item.preview?.url;
-        // Если остался суффикс превью, пробуем его срезать
-        if (finalUrl && finalUrl.includes('.max-165x165.')) {
-          finalUrl = finalUrl.replace('.max-165x165.', '.');
-        }
       }
 
       // 3. Вставляем изображение в редактор
@@ -85,6 +91,7 @@
         '{}'
       );
     } catch (e) {
+      console.warn('[prose-editor-images] broken editor config', e);
       return;
     }
 
@@ -118,12 +125,38 @@
     }
   }
 
-  /* 4. Наблюдатель за появлением редакторов в DOM */
-  document.addEventListener('DOMContentLoaded', () => {
-    new MutationObserver(() => {
-      document.querySelectorAll('.prose-editor').forEach(addImageButton);
-    }).observe(document.body, { childList: true, subtree: true });
+  function scanForEditors(root) {
+    if (root.querySelectorAll) {
+      root.querySelectorAll('.prose-editor').forEach(addImageButton);
+    }
+  }
 
-    document.querySelectorAll('.prose-editor').forEach(addImageButton);
+  /* 4. Наблюдатель за появлением редакторов в DOM:
+        реагируем только на добавленные узлы и с дебаунсом, чтобы не
+        сканировать весь документ на каждое нажатие клавиши в TipTap. */
+  document.addEventListener('DOMContentLoaded', () => {
+    let timer = null;
+
+    const observer = new MutationObserver((mutations) => {
+      let relevant = false;
+      for (const m of mutations) {
+        for (const node of m.addedNodes) {
+          if (node.nodeType !== 1) continue;
+          if (
+            node.classList?.contains('prose-editor') ||
+            node.querySelector?.('.prose-editor')
+          ) {
+            relevant = true;
+          }
+        }
+      }
+      if (!relevant) return;
+
+      clearTimeout(timer);
+      timer = setTimeout(() => scanForEditors(document.body), 100);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    scanForEditors(document.body);
   });
 })();

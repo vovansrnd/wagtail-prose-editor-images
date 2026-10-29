@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "wagtail-prose-editor-images"
-version = "0.2.2"
+version = "0.2.3"
 description = "Wagtail Image Chooser integration for django-prose-editor."
 readme = "README.md"
 authors = [{ name = "Vladimir Tarasov" }]
@@ -24,3 +24,4 @@ dependencies = [
 Home = "https://github.com/vovansrnd/wagtail-prose-editor-images"
 Source = "https://github.com/vovansrnd/wagtail-prose-editor-images"
 Issues = "https://github.com/vovansrnd/wagtail-prose-editor-images/issues"
+PyPI = "https://pypi.org/project/wagtail_prose_editor_images/"
