@@ -4,7 +4,13 @@ from django.contrib.auth.decorators import permission_required
 from django.http import Http404, JsonResponse
 from django.views.decorators.http import require_GET
 from wagtail.images import get_image_model
-from wagtail.images.permissions import permission_policy
+
+
+def _image_permission_policy():
+    """Resolve Wagtail's image policy after the image app is ready (Wagtail 9 ready)."""
+    from wagtail.permissions import policy_registry
+
+    return policy_registry.get_by_type(get_image_model())
 
 
 @require_GET
@@ -21,7 +27,7 @@ def get_image_url(request, image_id):
     except Image.DoesNotExist:
         raise Http404("Image not found")
 
-    if not permission_policy.user_has_permission_for_instance(
+    if not _image_permission_policy().user_has_permission_for_instance(
         request.user, "choose", image
     ):
         # Return the same response for a missing image and an inaccessible one,
