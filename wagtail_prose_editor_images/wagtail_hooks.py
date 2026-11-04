@@ -14,13 +14,16 @@ def _chooser_url():
 
 @hooks.register("insert_global_admin_js")
 def insert_prose_editor_image_js():
+    # ?v= для cache-busting локальной статики (runserver без манифеста):
+    # без него браузеры редакторов держат старый JS после обновления плагина.
+    # При изменении static/js/wagtail_image_handler.js — поднять версию.
     return format_html(
         "<script>window.WAGTAIL_PROSE_EDITOR_IMAGES = {{"
         "chooserUrl: \"{}\","
         "imageUrl: \"{}\""
         "}};</script>\n"
-        '<script src="{}" defer></script>\n'
-        '<script src="{}" defer></script>',
+        '<script src="{}?v=3" defer></script>\n'
+        '<script src="{}?v=3" defer></script>',
         _chooser_url(),
         reverse("wagtail_prose_editor_images:get_image_url", kwargs={"image_id": 987654321}).replace("987654321/", "__IMAGE_ID__/"),
         static("wagtailimages/js/image-chooser-modal.js"),

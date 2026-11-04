@@ -131,32 +131,50 @@
     }
   }
 
-  /* 4. Наблюдатель за появлением редакторов в DOM:
-        реагируем только на добавленные узлы и с дебаунсом, чтобы не
-        сканировать весь документ на каждое нажатие клавиши в TipTap. */
-  document.addEventListener('DOMContentLoaded', () => {
-    let timer = null;
+  /* 4. Инициализация, устойчивая к порядку инициализации редакторов.
+        django-prose-editor — ES-модули и строит .prose-editor асинхронно,
+        поэтому одиночный скан на DOMContentLoaded ненадёжен: если в момент
+        скана menubar ещё не построен, кнопка не создаётся никогда.
+        Сканируем: сразу (если body уже готов), на DOMContentLoaded, на
+        window load и с отложенными ретраями; MutationObserver ловит
+        редакторы, добавляемые динамически (inline-панели, preview).
+        Скан идемпотентен: существующая кнопка — ранний return. */
+  function scheduleScans() {
+    scanForEditors(document.body);
+    [250, 800, 2000].forEach((ms) => setTimeout(() => scanForEditors(document.body), ms));
+  }
 
-    const observer = new MutationObserver((mutations) => {
-      let relevant = false;
-      for (const m of mutations) {
-        for (const node of m.addedNodes) {
-          if (node.nodeType !== 1) continue;
-          if (
-            node.classList?.contains('prose-editor') ||
-            node.querySelector?.('.prose-editor')
-          ) {
-            relevant = true;
-          }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', scheduleScans);
+  } else {
+    scheduleScans();
+  }
+  window.addEventListener('load', () => scanForEditors(document.body));
+
+  let initTimer = null;
+  const observer = new MutationObserver((mutations) => {
+    let relevant = false;
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (node.nodeType !== 1) continue;
+        if (
+          node.classList?.contains('prose-editor') ||
+          node.querySelector?.('.prose-editor') ||
+          node.querySelector?.('.prose-menubar')
+        ) {
+          relevant = true;
         }
       }
-      if (!relevant) return;
-
-      clearTimeout(timer);
-      timer = setTimeout(() => scanForEditors(document.body), 100);
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    scanForEditors(document.body);
+    }
+    if (!relevant) return;
+    clearTimeout(initTimer);
+    initTimer = setTimeout(() => scanForEditors(document.body), 100);
   });
+  if (document.body) {
+    observer.observe(document.body, { childList: true, subtree: true });
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
+  }
 })();
