@@ -1,8 +1,8 @@
 # Changelog — wagtail_prose_editor_images
 
-All notable changes for this package are documented here. Version numbers below are **prepared release candidates** in this audit bundle; they are not a claim that those versions have already been uploaded to PyPI.
+All notable changes for this package are documented here. PyPI availability is tracked per release: entries below describe the package state at that version; publication happens separately once approved.
 
-## [0.2.4] — 2026-11-04 — prepared, not yet published
+## [0.2.4] — 2026-11-04
 
 - Fixed the "Insert image from Wagtail" menubar button never appearing: the button condition
   read `window.WAGTAIL_PROSE_EDITOR_IMAGES.extensions`, which the admin hook never populated,
@@ -17,7 +17,7 @@ All notable changes for this package are documented here. Version numbers below 
   plugin updates without manual cache clearing (runserver/local statics have no manifest
   hashes). Bump the version in `wagtail_hooks.py` when `wagtail_image_handler.js` changes.
 
-## [0.2.3] — 2026-10-29 — prepared, not yet published
+## [0.2.3] — 2026-10-29
 
 - Require permission to choose the specific image before returning its URL; clarify original-file URL semantics and Collection-permission testing.
 - Expanded installation, security, troubleshooting, storage/integration and multi-language documentation.

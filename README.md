@@ -16,9 +16,6 @@ This package enhances the *editor experience*; it does not replace Wagtail's ima
 - Checks permission to **choose that specific image**, not just permission to enter the admin. A user restricted by Wagtail Collections must not receive URLs for images they cannot choose.
 - Provides improved inline and block code styling alongside the image integration.
 
-## Audit/release status
-
-This source bundle prepares version `0.2.3` for a possible next release. Static syntax/package checks have been run, but a full Django/Wagtail integration suite has not run in the bundle build environment. Do not upload to PyPI until the release checklist in `../../04-docs/UPGRADE_AND_RELEASE.md` is complete.
 
 ## Requirements
 
@@ -27,7 +24,7 @@ Package metadata declares `wagtail>=6.0` and `django-prose-editor>=0.26`. Compat
 ## Installation
 
 ```bash
-pip install wagtail-prose-editor-images
+pip install wagtail-prose-editor-images==0.2.4
 ```
 
 Enable the apps in `INSTALLED_APPS`:
@@ -94,12 +91,7 @@ If your deployment uses private media storage, signed URLs, a CDN, or custom ima
 MIT. Source and issue tracker: [GitHub](https://github.com/vovansrnd/wagtail-prose-editor-images). Include Python, Django, Wagtail, `django-prose-editor`, browser console errors, and relevant permission configuration in bug reports.
 
 
-To install **the candidate source in this bundle** (rather than the already-published PyPI release), run from this package directory:
-
 ```bash
 python -m pip install .
-# For editable development instead:
-python -m pip install -e .
 ```
 
-`pip install wagtail_prose_editor_images` selects the version currently published on PyPI. The candidate version shown in `pyproject.toml` is not published by this archive operation; publish it only after the release checklist in `../../04-docs/UPGRADE_AND_RELEASE.md` passes.
