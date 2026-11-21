@@ -144,6 +144,27 @@ class ImageUrlEndpointTests(TestCase):
         # файл лежит внутри MEDIA_ROOT тестов
         self.assertTrue(rendition_file_path.startswith(settings.MEDIA_ROOT))
 
+    def test_fallback_to_legacy_policy_without_registry(self):
+        """Wagtail 6.x/7.x не имеет wagtail.permissions.policy_registry —
+        helper обязан уходить в legacy wagtail.images.permissions
+        .permission_policy. Имитируем отсутствие registry через
+        sys.modules[...] = None (from-import даёт ImportError)."""
+        import sys
+        from unittest import mock
+        from wagtail.images.permissions import permission_policy as legacy
+
+        with mock.patch.dict(sys.modules, {"wagtail.permissions": None}):
+            from wagtail_prose_editor_images.views import _image_permission_policy
+
+            policy = _image_permission_policy()
+        self.assertIs(policy, legacy)
+        # legacy policy функционально эквивалентна: choose-проверка работает
+        self.assertFalse(
+            policy.user_has_permission_for_instance(
+                self.staff_no_perms, "choose", self.image
+            )
+        )
+
     def test_custom_rendition_spec_setting_is_respected(self):
         """Настройка WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC применяется."""
         from django.test import override_settings
