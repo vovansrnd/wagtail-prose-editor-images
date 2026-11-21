@@ -1,15 +1,17 @@
 ### Пометка агента — команды (не часть stdout):
-### Сборка: python -m build --wheel . (HEAD 16febf386fba01987a2dd895ed32750305e2deae)
-### Запуск: PYTHONUNBUFFERED=1 <clean-wpei-venv>/bin/python tests/runtests.py (sqlite :memory:, tmp MEDIA_ROOT)
-### pip install --no-cache-dir для одноверсионных пересборок (см. шапку лога)
-=== FINAL WHEEL SUITE: HEAD 16febf386fba01987a2dd895ed32750305e2deae / wheel SHA256 56ed541823201150899f2ac86e812654909d824e147cf67a195002774d2a7140 / Python Python 3.14.4 / Django 6.0.9 / Wagtail (8, 1, 0, 'final', 1) / django-prose-editor 0.27.3 / django-js-asset 4.2.0 / nh3 0.3.7 / SQLite (тестовая БД в памяти, tmp MEDIA_ROOT) ===
+### Сборка: python -m build --wheel . (HEAD fac2ffb7a12ea4569d055b1ad47b264435bc8768, rev2)
+### Запуск: PYTHONUNBUFFERED=1 <clean-wpei-venv>/bin/python tests/runtests.py (sqlite :memory:, tmp MEDIA_ROOT); pip install --no-cache-dir --force-reinstall --no-deps <wheel>
+=== FINAL WHEEL SUITE (rev2): HEAD fac2ffb7a12ea4569d055b1ad47b264435bc8768 / wheel SHA256 df53577ddafc8a88342e55f76b6cdde882116dab4c98d11428df1466ddb39a6c / Python Python 3.14.4 / Django 6.0.9 / Wagtail (8, 1, 0, 'final', 1) / django-prose-editor 0.27.3 / django-js-asset 4.2.0 / nh3 0.3.7 / SQLite (:memory:, tmp MEDIA_ROOT) ===
+=== Новое в rev2: fallback legacy policy для Wagtail 6.x (тест sys.modules), cache-buster ?v=4 (контракт-тест), 15 тестов ===
 проверяемый пакет (wheel): /opt/MyApps/wagtail/d67-release-audit/clean-wpei-venv/lib/python3.14/site-packages/wagtail_prose_editor_images/__init__.py
-Found 13 test(s).
+Found 15 test(s).
 Creating test database for alias 'default'...
 System check identified no issues (0 silenced).
+./opt/MyApps/wagtail/wagtail-blogs/wpe-task/tests/test_image_url_endpoint.py:154: RemovedInWagtail90Warning: wagtail.images.permissions.permission_policy is deprecated. Use wagtail.permissions.policy_registry.get_by_type(get_image_model()) instead.
+  from wagtail.images.permissions import permission_policy as legacy
 ....Could not make rendition width-1200 for image 1
 Traceback (most recent call last):
-  File "/opt/MyApps/wagtail/d67-release-audit/clean-wpei-venv/lib/python3.14/site-packages/wagtail_prose_editor_images/views.py", line 48, in get_image_url
+  File "/opt/MyApps/wagtail/d67-release-audit/clean-wpei-venv/lib/python3.14/site-packages/wagtail_prose_editor_images/views.py", line 59, in get_image_url
     url = image.get_rendition(spec).url
           ~~~~~~~~~~~~~~~~~~~^^^^^^
   File "/usr/lib/python3.14/unittest/mock.py", line 1176, in __call__
@@ -23,7 +25,7 @@ Traceback (most recent call last):
 OSError: rendition backend down
 .Could not make rendition width-1200 for image 1
 Traceback (most recent call last):
-  File "/opt/MyApps/wagtail/d67-release-audit/clean-wpei-venv/lib/python3.14/site-packages/wagtail_prose_editor_images/views.py", line 48, in get_image_url
+  File "/opt/MyApps/wagtail/d67-release-audit/clean-wpei-venv/lib/python3.14/site-packages/wagtail_prose_editor_images/views.py", line 59, in get_image_url
     url = image.get_rendition(spec).url
           ~~~~~~~~~~~~~~~~~~~^^^^^^
   File "/usr/lib/python3.14/unittest/mock.py", line 1176, in __call__
@@ -35,9 +37,9 @@ Traceback (most recent call last):
   File "/usr/lib/python3.14/unittest/mock.py", line 1241, in _execute_mock_call
     raise effect
 OSError: rendition backend down
-........
+.........
 ----------------------------------------------------------------------
-Ran 13 tests in 2.446s
+Ran 15 tests in 1.877s
 
 OK
 Destroying test database for alias 'default'...

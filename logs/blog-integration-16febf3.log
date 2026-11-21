@@ -1,15 +1,15 @@
 ### Пометка агента — команды (не часть stdout):
-### Интеграция: pip install --no-cache-dir --force-reinstall --no-deps <wheel кандидата 0.2.5> в venv-wg81 (было 0.2.4 с PyPI, после прогона восстановлено 0.2.4 — views.py sha256 1d0bc470f9fef70a совпадает с до-состоянием)
-### Запуск: timeout 500 venv-wg81/bin/python manage.py test (стенд, тестовая БД локального PG 18.6, создаётся/удаляется раннером)
-### CustomImage width-1200: live-проверка на одноразовой scratch-БД (создана/удалена), PASS
-=== ИНТЕГРАЦИОННЫЙ ПРОГОН БЛОГА С КАНДИДАТОМ wagtail-prose-editor-images 0.2.5 (полный stdout+stderr) ===
-=== Репо блога: git rev-parse HEAD = 7035d3213e83a134bd97737d7caeedb492e9cc30 (ветка agent/issue7-suite-log; main = 4606d2824…) ===
+### Интеграция rev2: pip install --no-cache-dir --force-reinstall --no-deps <wheel rev2 0.2.5> в venv-wg81 (после прогона восстановлена опубликованная 0.2.4, views.py sha256 1d0bc470f9fef70a == до-состоянию)
+### Запуск: timeout 500 venv-wg81/bin/python manage.py test (стенд, тестовая БД локального PG 18.6)
+### rev2-изменения runtime: fallback legacy policy (Wagtail 6.x), cache-buster handler ?v=4 — потому интеграция перезапущена
+=== ИНТЕГРАЦИОННЫЙ ПРОГОН БЛОГА С КАНДИДАТОМ wagtail-prose-editor-images 0.2.5 rev2 (полный stdout+stderr) ===
+=== Репо блога: git rev-parse HEAD = 7035d3213e83a134bd97737d7caeedb492e9cc30 (agent/issue7-suite-log; main = 4606d2824…) ===
 === Команда: timeout 500 venv-wg81/bin/python manage.py test ===
-=== Стек venv-wg81: Python Python 3.14.4 / Django 6.0.9 / Wagtail 8.1 / django-prose-editor 0.27.3 / django-js-asset 4.2.0 / nh3 0.3.7 / PostgreSQL тестового сервера: 18.6 (Ubuntu 18.6-0ubuntu0.26.04.1) (локальный сервер стенда) ===
-=== До прогона: venv-wg81 содержит wagtail-prose-editor-images 0.2.4, views.py sha256: 1d0bc470f9fef70a ===
-=== Установка кандидата: pip install --no-cache-dir --force-reinstall --no-deps <wheel 0.2.5> ===
-=== Кандидат: 0.2.5 | импорт: /opt/MyApps/wagtail/venv-wg81/lib/python3.14/site-packages/wagtail_prose_editor_images/__init__.py | views.py sha256: e7c428b0deafc559 (должен совпасть с wheel) ===
-=== НАЧАЛО ПОЛНОГО ВЫВОДА ПРОГОНА ===
+=== Стек: Python Python 3.14.4 / Django 6.0.9 / Wagtail 8.1 / prose-editor 0.27.3 / js-asset 4.2.0 / nh3 0.3.7 / PostgreSQL тестового сервера: 18.6 (Ubuntu 18.6-0ubuntu0.26.04.1) (локальный сервер стенда) ===
+=== До: 0.2.4, views.py sha256 1d0bc470f9fef70a ===
+=== rev2-изменения: fallback legacy policy (Wagtail 6.x), cache-buster handler ?v=4 ===
+=== Кандидат rev2: 0.2.5 | views.py sha256 8e74e9caabc60b85 ===
+=== НАЧАЛО ПОЛНОГО ВЫВОДА ===
 Creating test database for alias 'default'...
 ........................Page created: "Тестовый корень" id=4 content_type=wagtailcore.Page path=/test-root/
 Page created: "Тестовый пост" id=5 content_type=blog.BlogPage path=/test-root/cache-post/
@@ -38,7 +38,7 @@ Traceback (most recent call last):
     raise effect
 Exception: db down
 ....InvalidationEpoch pk=1 отсутствует: page cache безопасно обойдён (bypass). Восстановите строку миграцией 0039.
-....ssss...............Page created: "Контакты" id=10 content_type=blog.ContactPage path=/contact-db8b59fd/
+....ssss...............Page created: "Контакты" id=10 content_type=blog.ContactPage path=/contact-841b6ee5/
 ...Replay protection DB unavailable
 Traceback (most recent call last):
   File "/opt/MyApps/wagtail/wagtail-blogs/blog/models.py", line 645, in clean
@@ -139,21 +139,21 @@ Page edited: "ranked-first" id=30 revision_id=12
 Published: "ranked-first" pk=30 revision_id=12
 ......Found 160 test(s).
 System check identified no issues (0 silenced).
-[test_runner]   terminating leaked own session pid=663581 state=idle backend_start=2026-11-21 23:50:13.034694+03:00 last_query='SELECT 1'
+[test_runner]   terminating leaked own session pid=666638 state=idle backend_start=2026-11-22 00:08:21.861660+03:00 last_query='SELECT 1'
 ...Sendmail delivery failed: exit=75; stderr=temporary failure
 Sendmail delivery failed: exit=75; stderr=temporary failure
 .Sendmail delivery failed: sendmail timed out after 15s
 Sendmail delivery failed: sendmail timed out after 15s
 ..................Page created: "Root" id=31 content_type=wagtailcore.Page path=/
-Page created: "Контакты" id=32 content_type=blog.ContactPage path=/contact-6771cc2a/
+Page created: "Контакты" id=32 content_type=blog.ContactPage path=/contact-f6bb01da/
 ......
 ----------------------------------------------------------------------
-Ran 160 tests in 108.178s
+Ran 160 tests in 157.589s
 
 OK (skipped=4)
 Destroying test database for alias 'default'...
 [test_runner] test DB 'test_a1020391_django_radio' drained in ~0.0s (terminated=0); DROP без гонки
 === EXIT=0 ===
-=== Восстановление: pip install --no-cache-dir --force-reinstall --no-deps wagtail-prose-editor-images==0.1.2 НЕ НУЖНО — восстанавливаю опубликованную 0.2.4 с PyPI ===
-=== ПОСЛЕ восстановления: version = 0.2.4 | views.py sha256: 1d0bc470f9fef70a | сверка с до-состоянием: см. шапку ===
+=== Восстановление опубликованной 0.2.4 с PyPI (--no-cache-dir --force-reinstall --no-deps) ===
+=== ПОСЛЕ: version = 0.2.4 | views.py sha256 1d0bc470f9fef70a (до-состояние: 1d0bc470f9fef70a) ===
 === конец лога ===
