@@ -16,7 +16,7 @@
 - Bildirilen bağımlılıklar: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - Python, Django ve Wagtail uyumluluğu birlikte kontrol edilmelidir. Paketin asgari bağımlılığı tüm sürümlerin desteklendiğini kanıtlamaz.
 
-Paket metaverisi en az `wagtail>=6.0` belirtir; bu alt sınırdır, test edilmiş bir matris değildir. Kaynak paket, eklentinin işlevsel regresyon test paketini içerir ve hedef yığın Wagtail 8.1 / Django 6.0.9 / Python 3.14 çalıştırmalarla doğrulanmıştır (eklenti 13/13, proje entegrasyonu 160/160). Bu, `wagtail>=6.0`'ın tüm kombinasyonlarının test edildiği anlamına gelmez — üretimi yükseltmeden önce tam sürümleri, veritabanını, depolama arka ucunu ve dağıtım ayarlarını doğrulayın.
+Paket metaverisi en az `wagtail>=6.0` belirtir; bu alt sınırdır, test edilmiş bir matris değildir. Kaynak paket, eklentinin işlevsel regresyon test paketini içerir ve hedef yığın Wagtail 8.1 / Django 6.0.9 / Python 3.14 çalıştırmalarla doğrulanmıştır (eklenti 15/15, proje entegrasyonu 160/160). Bu, `wagtail>=6.0`'ın tüm kombinasyonlarının test edildiği anlamına gelmez — üretimi yükseltmeden önce tam sürümleri, veritabanını, depolama arka ucunu ve dağıtım ayarlarını doğrulayın.
 
 ## Kurulum
 
