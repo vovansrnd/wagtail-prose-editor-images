@@ -16,7 +16,7 @@
 - Dependências declaradas: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - A compatibilidade entre Python, Django e Wagtail deve ser verificada em conjunto. A dependência mínima do pacote não confirma suporte a todas as versões.
 
-Os metadados declaram Wagtail >= 6.0, mas uma dependência mínima não comprova compatibilidade. Este arquivo não inclui uma matriz automatizada completa para todas as combinações de Django/Wagtail. Antes de atualizar produção, teste as versões exatas, o banco de dados, o armazenamento e as configurações de implantação em staging.
+Os metadados declaram no mínimo `wagtail>=6.0`; esse é o limite inferior, não uma matriz testada. O pacote fonte inclui a suíte de testes funcionais do plugin, e o stack alvo Wagtail 8.1 / Django 6.0.9 / Python 3.14 está confirmado por execuções (plugin 13/13, integração do projeto 160/160). Isso não significa que todas as combinações de `wagtail>=6.0` foram testadas — antes de atualizar produção, verifique as versões exatas, o banco de dados, o armazenamento e as configurações de implantação.
 
 ## Instalação
 
