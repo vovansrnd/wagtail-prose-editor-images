@@ -64,7 +64,7 @@ Pełną tabelę ustawień znajdziesz w [angielskim README](README.md).
 
 ### Ważne uwagi
 
-W `ProseEditorField` włącz `"Image": True`. Domyślnie endpoint zwraca rendition Wagtail `width-1200` i sprawdza uprawnienie `choose` dla konkretnego obrazu. Rozmiar można zmienić przez `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Rendition może utworzyć dodatkowy plik; przy błędzie endpoint zapisuje wyjątek w logu i używa URL oryginału jako rozwiązania awaryjnego.
+W `ProseEditorField` włącz `"Image": True`. Domyślnie endpoint zwraca rendition Wagtail `width-1200` i sprawdza uprawnienie `choose` dla konkretnego obrazu. Rozmiar można zmienić przez `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Rendition może utworzyć dodatkowy plik. Przy błędzie zachowanie jest fail closed: wyjątek trafia do logu, a endpoint zwraca kontrolowany JSON 5xx bez jakiegokolwiek URL; URL oryginału nigdy nie jest używany awaryjnie. Handler wstawiania w edytorze również nie używa URL-i z odpowiedzi chooser: przy błędzie endpointu nic nie jest wstawiane, a w panelu admina pojawia się widoczny błąd.
 
 ## Bezpieczeństwo i eksploatacja
 

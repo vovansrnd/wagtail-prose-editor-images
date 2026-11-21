@@ -64,7 +64,7 @@ Consultez le [README en anglais](README.md) pour la référence complète des pa
 
 ### Points importants
 
-Activez `"Image": True` dans `ProseEditorField`. Par défaut, l’endpoint renvoie une rendition Wagtail `width-1200` et vérifie le droit `choose` pour cette image. La taille peut être modifiée avec `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Une rendition peut créer un fichier supplémentaire ; en cas d’échec, l’erreur est journalisée et l’URL originale est utilisée en dernier recours.
+Activez `"Image": True` dans `ProseEditorField`. Par défaut, l’endpoint renvoie une rendition Wagtail `width-1200` et vérifie le droit `choose` pour cette image. La taille peut être modifiée avec `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Une rendition peut créer un fichier supplémentaire. En cas d’échec, le comportement est fail closed : l’erreur est journalisée et l’endpoint renvoie un JSON 5xx contrôlé sans aucune URL ; l’URL originale n’est jamais utilisée en secours. Le gestionnaire d’insertion de l’éditeur n’utilise pas non plus les URLs de la réponse du chooser : en cas d’échec de l’endpoint, rien n’est inséré et une erreur visible s’affiche dans l’admin.
 
 ## Sécurité et exploitation
 

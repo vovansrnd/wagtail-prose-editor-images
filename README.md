@@ -17,6 +17,16 @@ This package enhances the *editor experience*; it does not replace Wagtail's ima
 - Provides improved inline and block code styling alongside the image integration.
 
 
+## Compatibility
+
+The package metadata declares a minimum of `wagtail>=6.0`; that is the
+supported floor, not the full test matrix. The two tested configurations
+differ in kind: Wagtail 8.0.1 is covered by integration tests of the
+originating project with editable installs of this package, while
+Wagtail 8.1 was tested against the target production stack with clean
+wheel and sdist installs — both with Django 6.0.9 on Python 3.14.
+Other combinations may work but are not covered by the test suite.
+
 ## Requirements
 
 Package metadata declares `wagtail>=6.0` and `django-prose-editor>=0.26`. Compatibility with all combinations is not covered by an automated test matrix in this source bundle. Confirm the exact versions used by your site, especially after major Wagtail upgrades.
@@ -68,7 +78,7 @@ Use your actual page model and the extension set already supported by your insta
 
 The endpoint is an admin endpoint and requires Wagtail admin access plus the image's `choose` permission. An inaccessible or missing image returns the same not-found response to avoid exposing private image IDs. By default, the endpoint asks the configured Wagtail image model for a `width-1200` rendition. Change the spec with `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` if your templates and storage policy need another size.
 
-**Disk-quota note:** a rendition can create an additional file on disk. Keep the spec allowlist in your concrete image model intentional, and estimate the number and size of images inserted into article bodies before choosing a new default. In this project, `width-1200` is outside the CustomImage pass-through list so that public article images do not silently receive the multi-megabyte original. If rendition generation fails, the endpoint logs the error and falls back to the original as a last resort; monitor logs and storage errors because that fallback can be large.
+**Disk-quota note:** a rendition can create an additional file on disk. Keep the spec allowlist in your concrete image model intentional, and estimate the number and size of images inserted into article bodies before choosing a new default. In this project, `width-1200` is outside the CustomImage pass-through list so that public article images do not silently receive the multi-megabyte original. If rendition generation fails, the endpoint fails closed: it logs the error and returns a controlled 5xx JSON without any URL. It never falls back to the original file URL, so a storage failure cannot insert a full-size original into published article HTML. The editor-side insert handler behaves the same way: chooser-provided URLs are never used, and a failed endpoint call inserts nothing and reports a visible error in the admin.
 
 If your deployment uses private media storage, signed URLs, a CDN, or custom image delivery, review whether the returned rendition URL matches that architecture. The plugin cannot make a public media URL private after it has been inserted into public article HTML. Moving or renaming image files may also leave stale hard-coded URLs in already-saved HTML; a storage relocation must include a URL migration plan.
 

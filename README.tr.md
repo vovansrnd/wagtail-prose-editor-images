@@ -64,7 +64,7 @@ Tam ayar listesi için [İngilizce README](README.md) dosyasına bakın.
 
 ### Önemli notlar
 
-`ProseEditorField` içinde `"Image": True` seçeneğini etkinleştirin. Uç nokta varsayılan olarak Wagtail `width-1200` rendition URL’sini döndürür ve görsel için `choose` iznini denetler. Boyut `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` ile değiştirilebilir. Bir rendition diskte ek dosya oluşturabilir; oluşturma başarısız olursa hata günlüğe yazılır ve orijinal URL yalnızca son çare olarak kullanılır.
+`ProseEditorField` içinde `"Image": True` seçeneğini etkinleştirin. Uç nokta varsayılan olarak Wagtail `width-1200` rendition URL’sini döndürür ve görsel için `choose` iznini denetler. Boyut `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` ile değiştirilebilir. Bir rendition diskte ek dosya oluşturabilir. Hata durumunda davranış fail closed'dır: hata günlüğe yazılır ve uç nokta hiçbir URL içermeyen kontrollü bir 5xx JSON döndürür; orijinal URL asla yedek olarak kullanılmaz. Editörün ekleme işleyicisi de chooser yanıtındaki URL'leri kullanmaz: uç nokta hatasında hiçbir şey eklenmez ve yönetim panelinde görünür bir hata gösterilir.
 
 ## Güvenlik ve işletim
 

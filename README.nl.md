@@ -64,7 +64,7 @@ Raadpleeg de [Engelse README](README.md) voor het volledige instellingenoverzich
 
 ### Belangrijke aandachtspunten
 
-Schakel `"Image": True` in bij `ProseEditorField`. Standaard geeft het endpoint een Wagtail-rendition met `width-1200` terug en controleert het het `choose`-recht voor die afbeelding. De maat is instelbaar met `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Een rendition kan een extra bestand op schijf maken; bij een fout wordt die gelogd en wordt de originele URL alleen als laatste redmiddel gebruikt.
+Schakel `"Image": True` in bij `ProseEditorField`. Standaard geeft het endpoint een Wagtail-rendition met `width-1200` terug en controleert het het `choose`-recht voor die afbeelding. De maat is instelbaar met `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Een rendition kan een extra bestand op schijf maken. Bij een fout is het gedrag fail closed: de fout wordt gelogd en het endpoint geeft een gecontroleerde 5xx-JSON zonder enige URL terug; de originele URL wordt nooit als terugval gebruikt. De invoeghandler van de editor gebruikt evenmin URLs uit de chooser-reactie: bij een endpointfout wordt niets ingevoegd en verschijnt een zichtbare foutmelding in de admin.
 
 ## Beveiliging en beheer
 

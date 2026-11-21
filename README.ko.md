@@ -64,7 +64,7 @@ class ArticlePage(Page):
 
 ### 중요한 참고 사항
 
-`ProseEditorField`에서 `"Image": True`를 활성화하세요. 엔드포인트는 기본적으로 Wagtail `width-1200` rendition URL을 반환하고 해당 이미지의 `choose` 권한을 확인합니다. 크기는 `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`로 변경할 수 있습니다. Rendition은 추가 파일을 생성할 수 있으며, 생성 실패 시 오류를 기록하고 마지막 수단으로 원본 URL을 사용합니다.
+`ProseEditorField`에서 `"Image": True`를 활성화하세요. 엔드포인트는 기본적으로 Wagtail `width-1200` rendition URL을 반환하고 해당 이미지의 `choose` 권한을 확인합니다. 크기는 `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`로 변경할 수 있습니다. Rendition은 추가 파일을 생성할 수 있습니다. 실패 시 동작은 fail closed입니다: 오류를 기록하고 엔드포인트는 URL 없이 제어된 5xx JSON을 반환하며, 원본 URL은 절대 폴백으로 사용되지 않습니다. 에디터 삽입 핸들러도 chooser 응답의 URL을 사용하지 않습니다: 엔드포인트 실패 시 아무것도 삽입하지 않고 관리자 화면에 가시적 오류를 표시합니다.
 
 ## 보안 및 운영 지침
 

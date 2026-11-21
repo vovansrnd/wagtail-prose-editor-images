@@ -64,7 +64,7 @@ class ArticlePage(Page):
 
 ### 重要な注意事項
 
-`ProseEditorField` で `"Image": True` を有効にしてください。エンドポイントは既定で Wagtail の `width-1200` レンディション URL を返し、対象画像の `choose` 権限を確認します。サイズは `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` で変更できます。レンディションは追加ファイルを作成する場合があります。生成に失敗するとログを記録し、最後の手段としてオリジナル URL を返します。
+`ProseEditorField` で `"Image": True` を有効にしてください。エンドポイントは既定で Wagtail の `width-1200` レンディション URL を返し、対象画像の `choose` 権限を確認します。サイズは `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` で変更できます。レンディションは追加ファイルを作成する場合があります。失敗時の動作は fail closed です: エラーをログに記録し、エンドポイントは URL を一切含まない制御された 5xx JSON を返します。オリジナル URL は決してフォールバックとして使われません。エディターの挿入ハンドラーも chooser 応答の URL を使用しません: エンドポイント失敗時には何も挿入せず、管理画面に可視エラーを表示します。
 
 ## セキュリティと運用
 

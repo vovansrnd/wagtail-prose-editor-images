@@ -64,7 +64,7 @@ Die vollständige Einstellungsreferenz finden Sie in der [englischen README](REA
 
 ### Wichtige Hinweise
 
-Im `ProseEditorField` muss `"Image": True` aktiviert sein. Standardmäßig liefert der Endpunkt eine Wagtail-Rendition mit `width-1200` und prüft das `choose`-Recht für das konkrete Bild. Die Größe lässt sich mit `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` ändern. Eine Rendition kann eine zusätzliche Datei belegen; bei einem Fehler wird als letzter Ausweg die Original-URL verwendet und ein Fehler protokolliert.
+Im `ProseEditorField` muss `"Image": True` aktiviert sein. Standardmäßig liefert der Endpunkt eine Wagtail-Rendition mit `width-1200` und prüft das `choose`-Recht für das konkrete Bild. Die Größe lässt sich mit `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` ändern. Eine Rendition kann eine zusätzliche Datei belegen. Das Fehlerverhalten ist fail closed: der Fehler wird protokolliert und der Endpunkt liefert eine kontrollierte 5xx-JSON-Antwort ohne jegliche URL; die Original-URL wird niemals als Rückfallebene verwendet. Der Einfüge-Handler im Editor nutzt ebenfalls keine URLs aus der Chooser-Antwort: bei einem Endpunktfehler wird nichts eingefügt und ein sichtbarer Fehler in der Admin-Oberfläche angezeigt.
 
 ## Sicherheit und Betrieb
 

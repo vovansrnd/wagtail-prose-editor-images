@@ -64,7 +64,7 @@ class ArticlePage(Page):
 
 ### 重要注意事项
 
-在 `ProseEditorField` 中启用 `"Image": True`。默认情况下，接口返回 Wagtail `width-1200` 衍生图的 URL，并检查用户对该图片的 `choose` 权限。可通过 `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` 修改尺寸。衍生图可能在磁盘上新增文件；生成失败时会记录错误，并仅在最后的回退路径中使用原图 URL。
+在 `ProseEditorField` 中启用 `"Image": True`。默认情况下，接口返回 Wagtail `width-1200` 衍生图的 URL，并检查用户对该图片的 `choose` 权限。可通过 `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` 修改尺寸。衍生图可能在磁盘上新增文件。失败时的行为是 fail closed：错误会被记录，接口返回不带任何 URL 的受控 5xx JSON；原图 URL 绝不会作为回退使用。编辑器的插入处理器同样不使用 chooser 响应中的 URL：接口失败时不插入任何内容，并在管理界面显示可见错误。
 
 ## 安全与运维建议
 

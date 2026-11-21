@@ -2,6 +2,23 @@
 
 All notable changes for this package are documented here. PyPI availability is tracked per release: entries below describe the package state at that version; publication happens separately once approved.
 
+## [0.2.5] — unreleased candidate (NOT published to PyPI)
+
+- **Fail closed on rendition failure**: if `get_rendition()` raises, the image URL
+  endpoint now returns a controlled 5xx JSON and never reads or returns
+  `image.file.url`. The previous last-resort fallback could insert a full-size
+  original into published article HTML when the `width-1200` derivation failed
+  (e.g. disk-quota or storage errors).
+- **Fail closed in the editor JS**: the insert handler no longer falls back to
+  chooser-provided URLs (`item.url` / `item.download_url` / `item.preview.url`)
+  when the endpoint fails. The image is inserted only with the URL returned by
+  the permission-checked endpoint; network errors, non-2xx responses, invalid
+  JSON and `success=false` insert nothing and show a visible error message in
+  the Wagtail admin next to the field.
+- Ship the plugin's functional regression test suite with the source bundle
+  (endpoint fail-closed paths, permission boundaries, real derived rendition,
+  JS insert-handler contract); runnable via `tests/runtests.py`.
+
 ## [0.2.4] — 2026-11-04
 
 - Fixed the "Insert image from Wagtail" menubar button never appearing: the button condition
