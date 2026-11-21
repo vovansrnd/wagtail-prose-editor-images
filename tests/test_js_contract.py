@@ -55,3 +55,20 @@ class JsInsertHandlerContractTests(TestCase):
         js = _handler_js()
         for a, b in (("{", "}"), ("(", ")"), ("[", "]")):
             self.assertEqual(js.count(a), js.count(b))
+
+
+class CacheBusterContractTests(TestCase):
+    """Cache-buster handler JS обязан быть выше номера, разданного 0.2.4
+    (?v=3): иначе закэшированный старый обработчик с fallback-цепочкой
+    продолжит работать и обойдёт fail-closed поведение 0.2.5."""
+
+    def test_handler_cache_buster_is_v4(self):
+        from wagtail_prose_editor_images.wagtail_hooks import (
+            insert_prose_editor_image_js,
+        )
+
+        html = insert_prose_editor_image_js()
+        self.assertIn("wagtail_image_handler.js?v=4", html)
+        self.assertNotIn("wagtail_image_handler.js?v=3", html)
+        # скрипт chooser Wagtail не менялся — его версия не повышается
+        self.assertIn("image-chooser-modal.js?v=3", html)
