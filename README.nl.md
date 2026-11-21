@@ -16,7 +16,7 @@
 - Gedeclareerde afhankelijkheden: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - Controleer de compatibiliteit van Python, Django en Wagtail gezamenlijk. De minimale pakketafhankelijkheid bewijst niet dat alle versies worden ondersteund.
 
-De pakketmetadata declareert minimaal `wagtail>=6.0`; dat is de ondergrens, geen geteste matrix. Het bronpakket bevat de functionele regressiontestsuite van de plugin, en de doel-stack Wagtail 8.1 / Django 6.0.9 / Python 3.14 is bevestigd door testruns (plugin 13/13, projectintegratie 160/160). Dat betekent niet dat alle `wagtail>=6.0`-combinaties getest zijn — test vóór een productie-upgrade de exacte versies, database, opslagbackend en deploymentinstellingen.
+De pakketmetadata declareert minimaal `wagtail>=6.0`; dat is de ondergrens, geen geteste matrix. Het bronpakket bevat de functionele regressiontestsuite van de plugin, en de doel-stack Wagtail 8.1 / Django 6.0.9 / Python 3.14 is bevestigd door testruns (plugin 15/15, projectintegratie 160/160). Dat betekent niet dat alle `wagtail>=6.0`-combinaties getest zijn — test vóór een productie-upgrade de exacte versies, database, opslagbackend en deploymentinstellingen.
 
 ## Installatie
 
