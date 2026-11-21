@@ -16,7 +16,7 @@
 - 声明的依赖: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - Python、Django 与 Wagtail 的兼容性必须一起验证。最低依赖版本并不代表所有版本均受支持。
 
-包元数据声明 Wagtail >= 6.0，但最低依赖版本并不代表已验证所有版本的兼容性。本归档不包含覆盖所有 Django/Wagtail 组合的完整自动化测试矩阵。升级生产环境前，请在预发布环境验证具体版本、数据库、文件存储后端和部署配置。
+包元数据声明最低 `wagtail>=6.0`；这是下限，而非已验证的矩阵。源码包包含插件的 功能回归测试套件，目标栈 Wagtail 8.1 / Django 6.0.9 / Python 3.14 已通过运行验证（插件 15/15，项目集成 160/160）。这并不意味着 `wagtail>=6.0` 的所有组合都已测试——升级生产环境前，请验证具体版本、数据库、文件存储后端和部署配置。
 
 ## 安装
 
@@ -64,7 +64,7 @@ class ArticlePage(Page):
 
 ### 重要注意事项
 
-在 `ProseEditorField` 中启用 `"Image": True`。默认情况下，接口返回 Wagtail `width-1200` 衍生图的 URL，并检查用户对该图片的 `choose` 权限。可通过 `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` 修改尺寸。衍生图可能在磁盘上新增文件；生成失败时会记录错误，并仅在最后的回退路径中使用原图 URL。
+在 `ProseEditorField` 中启用 `"Image": True`。默认情况下，接口返回 Wagtail `width-1200` 衍生图的 URL，并检查用户对该图片的 `choose` 权限。可通过 `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` 修改尺寸。衍生图可能在磁盘上新增文件。失败时的行为是 fail closed：错误会被记录，接口返回不带任何 URL 的受控 5xx JSON；原图 URL 绝不会作为回退使用。编辑器的插入处理器同样不使用 chooser 响应中的 URL：接口失败时不插入任何内容，并在管理界面显示可见错误。
 
 ## 安全与运维建议
 

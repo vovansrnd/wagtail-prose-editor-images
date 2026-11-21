@@ -16,7 +16,7 @@
 - Deklarierte Abhängigkeiten: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - Die Kompatibilität von Python, Django und Wagtail muss gemeinsam geprüft werden. Die minimale Paketabhängigkeit bestätigt keine Unterstützung jeder Version.
 
-Die Paketmetadaten deklarieren Wagtail >= 6.0. Eine minimale Abhängigkeit ist jedoch kein Kompatibilitätstest. Dieses Quellarchiv enthält keine vollständige automatisierte Matrix für alle Django-/Wagtail-Kombinationen. Prüfen Sie vor einem Produktionsupgrade die konkreten Versionen, Datenbank, Speicher-Backend und Deployment-Einstellungen in einer Staging-Umgebung.
+Die Paketmetadaten deklarieren mindestens `wagtail>=6.0`; das ist die untere Grenze, keine geprüfte Matrix. Das Quellpaket enthält die funktionale Regressionstestsuite des Plugins, und der Ziel-Stack Wagtail 8.1 / Django 6.0.9 / Python 3.14 ist durch Testläufe bestätigt (Plugin 15/15, Projekt-Integration 160/160). Das bedeutet nicht, dass alle `wagtail>=6.0`-Kombinationen getestet sind — prüfen Sie vor einem Produktionsupgrade die konkreten Versionen, Datenbank, Speicher-Backend und Deployment-Einstellungen.
 
 ## Installation
 
@@ -64,7 +64,7 @@ Die vollständige Einstellungsreferenz finden Sie in der [englischen README](REA
 
 ### Wichtige Hinweise
 
-Im `ProseEditorField` muss `"Image": True` aktiviert sein. Standardmäßig liefert der Endpunkt eine Wagtail-Rendition mit `width-1200` und prüft das `choose`-Recht für das konkrete Bild. Die Größe lässt sich mit `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` ändern. Eine Rendition kann eine zusätzliche Datei belegen; bei einem Fehler wird als letzter Ausweg die Original-URL verwendet und ein Fehler protokolliert.
+Im `ProseEditorField` muss `"Image": True` aktiviert sein. Standardmäßig liefert der Endpunkt eine Wagtail-Rendition mit `width-1200` und prüft das `choose`-Recht für das konkrete Bild. Die Größe lässt sich mit `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` ändern. Eine Rendition kann eine zusätzliche Datei belegen. Das Fehlerverhalten ist fail closed: der Fehler wird protokolliert und der Endpunkt liefert eine kontrollierte 5xx-JSON-Antwort ohne jegliche URL; die Original-URL wird niemals als Rückfallebene verwendet. Der Einfüge-Handler im Editor nutzt ebenfalls keine URLs aus der Chooser-Antwort: bei einem Endpunktfehler wird nichts eingefügt und ein sichtbarer Fehler in der Admin-Oberfläche angezeigt.
 
 ## Sicherheit und Betrieb
 

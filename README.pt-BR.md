@@ -16,7 +16,7 @@
 - Dependências declaradas: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - A compatibilidade entre Python, Django e Wagtail deve ser verificada em conjunto. A dependência mínima do pacote não confirma suporte a todas as versões.
 
-Os metadados declaram Wagtail >= 6.0, mas uma dependência mínima não comprova compatibilidade. Este arquivo não inclui uma matriz automatizada completa para todas as combinações de Django/Wagtail. Antes de atualizar produção, teste as versões exatas, o banco de dados, o armazenamento e as configurações de implantação em staging.
+Os metadados declaram no mínimo `wagtail>=6.0`; esse é o limite inferior, não uma matriz testada. O pacote fonte inclui a suíte de testes funcionais do plugin, e o stack alvo Wagtail 8.1 / Django 6.0.9 / Python 3.14 está confirmado por execuções (plugin 15/15, integração do projeto 160/160). Isso não significa que todas as combinações de `wagtail>=6.0` foram testadas — antes de atualizar produção, verifique as versões exatas, o banco de dados, o armazenamento e as configurações de implantação.
 
 ## Instalação
 
@@ -64,7 +64,7 @@ Consulte o [README em inglês](README.md) para a referência completa das config
 
 ### Observações importantes
 
-Ative `"Image": True` em `ProseEditorField`. Por padrão, o endpoint retorna uma rendition do Wagtail `width-1200` e verifica a permissão `choose` para aquela imagem. O tamanho pode ser alterado com `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Uma rendition pode criar um arquivo extra no disco; se a geração falhar, o erro será registrado e a URL do original será usada apenas como último recurso.
+Ative `"Image": True` em `ProseEditorField`. Por padrão, o endpoint retorna uma rendition do Wagtail `width-1200` e verifica a permissão `choose` para aquela imagem. O tamanho pode ser alterado com `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Uma rendition pode criar um arquivo extra no disco. Em caso de falha, o comportamento é fail closed: o erro é registrado e o endpoint retorna um JSON 5xx controlado sem nenhuma URL; a URL do original nunca é usada como fallback. O manipulador de inserção do editor também não usa URLs da resposta do chooser: em caso de falha do endpoint, nada é inserido e um erro visível é exibido no admin.
 
 ## Segurança e operação
 

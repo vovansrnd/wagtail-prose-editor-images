@@ -16,7 +16,7 @@
 - Bildirilen bağımlılıklar: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - Python, Django ve Wagtail uyumluluğu birlikte kontrol edilmelidir. Paketin asgari bağımlılığı tüm sürümlerin desteklendiğini kanıtlamaz.
 
-Paket metaverisi Wagtail >= 6.0 belirtir; ancak asgari bağımlılık, tüm sürümlerle uyumluluğu kanıtlamaz. Bu arşiv tüm Django/Wagtail kombinasyonları için tam otomatik test matrisi içermez. Üretimi yükseltmeden önce tam sürümleri, veritabanını, depolama arka ucunu ve dağıtım ayarlarını staging ortamında sınayın.
+Paket metaverisi en az `wagtail>=6.0` belirtir; bu alt sınırdır, test edilmiş bir matris değildir. Kaynak paket, eklentinin işlevsel regresyon test paketini içerir ve hedef yığın Wagtail 8.1 / Django 6.0.9 / Python 3.14 çalıştırmalarla doğrulanmıştır (eklenti 15/15, proje entegrasyonu 160/160). Bu, `wagtail>=6.0`'ın tüm kombinasyonlarının test edildiği anlamına gelmez — üretimi yükseltmeden önce tam sürümleri, veritabanını, depolama arka ucunu ve dağıtım ayarlarını doğrulayın.
 
 ## Kurulum
 
@@ -64,7 +64,7 @@ Tam ayar listesi için [İngilizce README](README.md) dosyasına bakın.
 
 ### Önemli notlar
 
-`ProseEditorField` içinde `"Image": True` seçeneğini etkinleştirin. Uç nokta varsayılan olarak Wagtail `width-1200` rendition URL’sini döndürür ve görsel için `choose` iznini denetler. Boyut `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` ile değiştirilebilir. Bir rendition diskte ek dosya oluşturabilir; oluşturma başarısız olursa hata günlüğe yazılır ve orijinal URL yalnızca son çare olarak kullanılır.
+`ProseEditorField` içinde `"Image": True` seçeneğini etkinleştirin. Uç nokta varsayılan olarak Wagtail `width-1200` rendition URL’sini döndürür ve görsel için `choose` iznini denetler. Boyut `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC` ile değiştirilebilir. Bir rendition diskte ek dosya oluşturabilir. Hata durumunda davranış fail closed'dır: hata günlüğe yazılır ve uç nokta hiçbir URL içermeyen kontrollü bir 5xx JSON döndürür; orijinal URL asla yedek olarak kullanılmaz. Editörün ekleme işleyicisi de chooser yanıtındaki URL'leri kullanmaz: uç nokta hatasında hiçbir şey eklenmez ve yönetim panelinde görünür bir hata gösterilir.
 
 ## Güvenlik ve işletim
 

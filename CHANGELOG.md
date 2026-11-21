@@ -1,8 +1,40 @@
 # Changelog — wagtail_prose_editor_images
 
-All notable changes for this package are documented here. Version numbers below are **prepared release candidates** in this audit bundle; they are not a claim that those versions have already been uploaded to PyPI.
+All notable changes for this package are documented here. PyPI availability is tracked per release: entries below describe the package state at that version; publication happens separately once approved.
 
-## [0.2.3] — 2026-10-29 — prepared, not yet published
+## [0.2.5] — unreleased candidate (NOT published to PyPI)
+
+- **Fail closed on rendition failure**: if `get_rendition()` raises, the image URL
+  endpoint now returns a controlled 5xx JSON and never reads or returns
+  `image.file.url`. The previous last-resort fallback could insert a full-size
+  original into published article HTML when the `width-1200` derivation failed
+  (e.g. disk-quota or storage errors).
+- **Fail closed in the editor JS**: the insert handler no longer falls back to
+  chooser-provided URLs (`item.url` / `item.download_url` / `item.preview.url`)
+  when the endpoint fails. The image is inserted only with the URL returned by
+  the permission-checked endpoint; network errors, non-2xx responses, invalid
+  JSON and `success=false` insert nothing and show a visible error message in
+  the Wagtail admin next to the field.
+- Ship the plugin's functional regression test suite with the source bundle
+  (endpoint fail-closed paths, permission boundaries, real derived rendition,
+  JS insert-handler contract); runnable via `tests/runtests.py`.
+
+## [0.2.4] — 2026-11-04
+
+- Fixed the "Insert image from Wagtail" menubar button never appearing: the button condition
+  read `window.WAGTAIL_PROSE_EDITOR_IMAGES.extensions`, which the admin hook never populated,
+  so the check was always false on every project. The condition now reads the per-field
+  serialized config (`data-django-prose-editor-configurable` on the field's own textarea), so
+  the button appears only on ProseEditorFields that actually enable the `Image` extension.
+- Made editor scanning robust against asynchronous editor initialization (ES-module
+  django-prose-editor builds `.prose-editor` after DOMContentLoaded): immediate scan when the
+  DOM is ready, DOMContentLoaded scan, `window load` scan, delayed retries and a
+  MutationObserver tuned to menubar additions. Scans are idempotent.
+- Added `?v=` cache-busting to the hook-injected admin scripts so editor browsers pick up
+  plugin updates without manual cache clearing (runserver/local statics have no manifest
+  hashes). Bump the version in `wagtail_hooks.py` when `wagtail_image_handler.js` changes.
+
+## [0.2.3] — 2026-10-29
 
 - Require permission to choose the specific image before returning its URL; clarify original-file URL semantics and Collection-permission testing.
 - Expanded installation, security, troubleshooting, storage/integration and multi-language documentation.

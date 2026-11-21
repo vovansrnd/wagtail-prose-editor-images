@@ -16,7 +16,7 @@
 - Gedeclareerde afhankelijkheden: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - Controleer de compatibiliteit van Python, Django en Wagtail gezamenlijk. De minimale pakketafhankelijkheid bewijst niet dat alle versies worden ondersteund.
 
-De pakketmetadata vermeldt Wagtail >= 6.0, maar een minimale afhankelijkheid bewijst geen compatibiliteit. Dit archief bevat geen volledige geautomatiseerde matrix voor alle Django/Wagtail-combinaties. Test vóór een productie-upgrade de exacte versies, database, opslagbackend en deploymentinstellingen in staging.
+De pakketmetadata declareert minimaal `wagtail>=6.0`; dat is de ondergrens, geen geteste matrix. Het bronpakket bevat de functionele regressiontestsuite van de plugin, en de doel-stack Wagtail 8.1 / Django 6.0.9 / Python 3.14 is bevestigd door testruns (plugin 15/15, projectintegratie 160/160). Dat betekent niet dat alle `wagtail>=6.0`-combinaties getest zijn — test vóór een productie-upgrade de exacte versies, database, opslagbackend en deploymentinstellingen.
 
 ## Installatie
 
@@ -64,7 +64,7 @@ Raadpleeg de [Engelse README](README.md) voor het volledige instellingenoverzich
 
 ### Belangrijke aandachtspunten
 
-Schakel `"Image": True` in bij `ProseEditorField`. Standaard geeft het endpoint een Wagtail-rendition met `width-1200` terug en controleert het het `choose`-recht voor die afbeelding. De maat is instelbaar met `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Een rendition kan een extra bestand op schijf maken; bij een fout wordt die gelogd en wordt de originele URL alleen als laatste redmiddel gebruikt.
+Schakel `"Image": True` in bij `ProseEditorField`. Standaard geeft het endpoint een Wagtail-rendition met `width-1200` terug en controleert het het `choose`-recht voor die afbeelding. De maat is instelbaar met `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Een rendition kan een extra bestand op schijf maken. Bij een fout is het gedrag fail closed: de fout wordt gelogd en het endpoint geeft een gecontroleerde 5xx-JSON zonder enige URL terug; de originele URL wordt nooit als terugval gebruikt. De invoeghandler van de editor gebruikt evenmin URLs uit de chooser-reactie: bij een endpointfout wordt niets ingevoegd en verschijnt een zichtbare foutmelding in de admin.
 
 ## Beveiliging en beheer
 

@@ -16,7 +16,7 @@
 - Dépendances déclarées: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - La compatibilité de Python, Django et Wagtail doit être vérifiée conjointement. La dépendance minimale du paquet ne confirme pas que toutes les versions sont prises en charge.
 
-Les métadonnées déclarent Wagtail >= 6.0, mais une dépendance minimale ne prouve pas la compatibilité. Cette archive ne contient pas de matrice automatisée complète pour toutes les combinaisons Django/Wagtail. Avant une mise à jour en production, testez les versions exactes, la base de données, le stockage et la configuration de déploiement en préproduction.
+Les métadonnées déclarent au minimum `wagtail>=6.0` ; c’est la borne basse, pas une matrice testée. Le paquet source inclut la suite de tests fonctionnels du plugin, et le stack cible Wagtail 8.1 / Django 6.0.9 / Python 3.14 est confirmé par des exécutions (plugin 15/15, intégration du projet 160/160). Cela ne signifie pas que toutes les combinaisons `wagtail>=6.0` sont testées — avant une mise à jour en production, vérifiez les versions exactes, la base de données, le stockage et la configuration de déploiement.
 
 ## Installation
 
@@ -64,7 +64,7 @@ Consultez le [README en anglais](README.md) pour la référence complète des pa
 
 ### Points importants
 
-Activez `"Image": True` dans `ProseEditorField`. Par défaut, l’endpoint renvoie une rendition Wagtail `width-1200` et vérifie le droit `choose` pour cette image. La taille peut être modifiée avec `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Une rendition peut créer un fichier supplémentaire ; en cas d’échec, l’erreur est journalisée et l’URL originale est utilisée en dernier recours.
+Activez `"Image": True` dans `ProseEditorField`. Par défaut, l’endpoint renvoie une rendition Wagtail `width-1200` et vérifie le droit `choose` pour cette image. La taille peut être modifiée avec `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Une rendition peut créer un fichier supplémentaire. En cas d’échec, le comportement est fail closed : l’erreur est journalisée et l’endpoint renvoie un JSON 5xx contrôlé sans aucune URL ; l’URL originale n’est jamais utilisée en secours. Le gestionnaire d’insertion de l’éditeur n’utilise pas non plus les URLs de la réponse du chooser : en cas d’échec de l’endpoint, rien n’est inséré et une erreur visible s’affiche dans l’admin.
 
 ## Sécurité et exploitation
 

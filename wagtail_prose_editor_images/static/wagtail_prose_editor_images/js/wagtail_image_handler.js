@@ -46,26 +46,38 @@
       let alt = item.default_alt_text || item.alt || item.title || '';
       let finalUrl = null;
 
-      // 1. Запрашиваем НАСТОЯЩИЙ оригинальный URL картинки из API по ее ID
+      // Единственный источник URL — permission-checked endpoint плагина.
+      // Fallback на адреса из ответа chooser (любые поля item, кроме id)
+      // ЗАПРЕЩЁН: эти адреса не проходят проверку прав и могут быть
+      // полноразмерным оригиналом вместо производного rendition. При любом
+      // сбое endpoint (сетевая ошибка, non-2xx, некорректный JSON,
+      // success=false) ничего не вставляется и показывается понятная ошибка.
       if (imageId) {
+        let data;
         try {
           const res = await fetch(CFG.imageUrl.replace("__IMAGE_ID__", encodeURIComponent(imageId)));
-          const data = await res.json();
-          if (data.success && data.url) {
-            finalUrl = data.url;
-            alt = alt || data.title;
+          if (!res.ok) {
+            throw new Error('Image URL endpoint returned HTTP ' + res.status);
           }
+          data = await res.json();
         } catch (e) {
-          console.warn('Could not fetch exact image URL from API, falling back', e);
+          console.error('Wagtail image URL endpoint failed:', e);
+          showInsertError(editor, 'Could not retrieve the image URL from the server. The image was not inserted.');
+          return;
         }
+        if (!data.success || !data.url) {
+          console.warn('Image URL endpoint did not return a URL:', data);
+          showInsertError(editor, 'The server did not return an image URL (the file may be unavailable). The image was not inserted.');
+          return;
+        }
+        finalUrl = data.url;
+        alt = alt || data.title;
+      } else {
+        showInsertError(editor, 'The image chooser returned an unknown image reference. The image was not inserted.');
+        return;
       }
 
-      // 2. Фолбэк, если эндпоинт недоступен
-      if (!finalUrl) {
-        finalUrl = item.url || item.download_url || item.preview?.url;
-      }
-
-      // 3. Вставляем изображение в редактор
+      // Вставляем изображение в редактор — только по проверенному URL
       if (finalUrl) {
         editor
           .chain()
@@ -75,6 +87,34 @@
       }
     } catch (err) {
       console.error('Wagtail image insert error:', err);
+    }
+  }
+
+  /* Видимая ошибка вставки в Wagtail admin (рядом с полем редактора). */
+  function showInsertError(editor, message) {
+    try {
+      const dom = editor && editor.view ? editor.view.dom : null;
+      const container = dom
+        ? (dom.closest('.w-field, .object, .prose-editor') || dom.parentElement)
+        : null;
+      if (!container) {
+        window.alert(message);
+        return;
+      }
+      let box = container.querySelector('.wpei-insert-error');
+      if (!box) {
+        box = document.createElement('div');
+        box.className = 'wpei-insert-error';
+        box.style.cssText = 'color:#cd3238;background:#f6e7e8;border:1px solid #e0b4b6;'
+          + 'padding:6px 10px;margin-top:6px;border-radius:3px;font-size:13px;';
+        container.appendChild(box);
+      }
+      box.textContent = message;
+      clearTimeout(box._wpeiTimer);
+      box._wpeiTimer = setTimeout(() => box.remove(), 8000);
+    } catch (e) {
+      console.error('Could not show insert error UI:', e);
+      window.alert(message);
     }
   }
 
@@ -131,32 +171,50 @@
     }
   }
 
-  /* 4. Наблюдатель за появлением редакторов в DOM:
-        реагируем только на добавленные узлы и с дебаунсом, чтобы не
-        сканировать весь документ на каждое нажатие клавиши в TipTap. */
-  document.addEventListener('DOMContentLoaded', () => {
-    let timer = null;
+  /* 4. Инициализация, устойчивая к порядку инициализации редакторов.
+        django-prose-editor — ES-модули и строит .prose-editor асинхронно,
+        поэтому одиночный скан на DOMContentLoaded ненадёжен: если в момент
+        скана menubar ещё не построен, кнопка не создаётся никогда.
+        Сканируем: сразу (если body уже готов), на DOMContentLoaded, на
+        window load и с отложенными ретраями; MutationObserver ловит
+        редакторы, добавляемые динамически (inline-панели, preview).
+        Скан идемпотентен: существующая кнопка — ранний return. */
+  function scheduleScans() {
+    scanForEditors(document.body);
+    [250, 800, 2000].forEach((ms) => setTimeout(() => scanForEditors(document.body), ms));
+  }
 
-    const observer = new MutationObserver((mutations) => {
-      let relevant = false;
-      for (const m of mutations) {
-        for (const node of m.addedNodes) {
-          if (node.nodeType !== 1) continue;
-          if (
-            node.classList?.contains('prose-editor') ||
-            node.querySelector?.('.prose-editor')
-          ) {
-            relevant = true;
-          }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', scheduleScans);
+  } else {
+    scheduleScans();
+  }
+  window.addEventListener('load', () => scanForEditors(document.body));
+
+  let initTimer = null;
+  const observer = new MutationObserver((mutations) => {
+    let relevant = false;
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (node.nodeType !== 1) continue;
+        if (
+          node.classList?.contains('prose-editor') ||
+          node.querySelector?.('.prose-editor') ||
+          node.querySelector?.('.prose-menubar')
+        ) {
+          relevant = true;
         }
       }
-      if (!relevant) return;
-
-      clearTimeout(timer);
-      timer = setTimeout(() => scanForEditors(document.body), 100);
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    scanForEditors(document.body);
+    }
+    if (!relevant) return;
+    clearTimeout(initTimer);
+    initTimer = setTimeout(() => scanForEditors(document.body), 100);
   });
+  if (document.body) {
+    observer.observe(document.body, { childList: true, subtree: true });
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
+  }
 })();

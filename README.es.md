@@ -16,7 +16,7 @@
 - Dependencias declaradas: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - La compatibilidad de Python, Django y Wagtail debe verificarse en conjunto. La dependencia mínima del paquete no confirma que todas las versiones estén soportadas.
 
-Los metadatos declaran Wagtail >= 6.0, pero una dependencia mínima no demuestra compatibilidad. Este archivo no incluye una matriz automatizada completa para todas las combinaciones de Django/Wagtail. Antes de actualizar producción, prueba las versiones exactas, la base de datos, el almacenamiento y la configuración de despliegue en un entorno de pruebas.
+Los metadatos declaran como mínimo `wagtail>=6.0`; es el límite inferior, no una matriz probada. El paquete fuente incluye la suite de pruebas funcionales del plugin, y el stack objetivo Wagtail 8.1 / Django 6.0.9 / Python 3.14 está confirmado por ejecuciones (plugin 15/15, integración del proyecto 160/160). Esto no significa que todas las combinaciones de `wagtail>=6.0` estén probadas — antes de actualizar producción, verifique las versiones exactas, la base de datos, el almacenamiento y la configuración de despliegue.
 
 ## Instalación
 
@@ -64,7 +64,7 @@ Consulta la [versión inglesa del README](README.md) para ver la referencia comp
 
 ### Notas importantes
 
-Activa `"Image": True` en `ProseEditorField`. De forma predeterminada, el endpoint devuelve una versión de Wagtail `width-1200` y comprueba el permiso `choose` para esa imagen. Puedes cambiar el tamaño con `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Una versión derivada puede crear otro archivo en disco; si falla su generación, el endpoint registra el error y usa la URL original como último recurso.
+Activa `"Image": True` en `ProseEditorField`. De forma predeterminada, el endpoint devuelve una versión de Wagtail `width-1200` y comprueba el permiso `choose` para esa imagen. Puedes cambiar el tamaño con `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Una versión derivada puede crear otro archivo en disco. Ante un fallo, el endpoint aplica fail closed: registra el error y devuelve un JSON 5xx controlado sin ninguna URL; la URL original nunca se usa como respaldo. El manejador de inserción del editor tampoco usa URLs de la respuesta del chooser: ante un fallo del endpoint no se inserta nada y se muestra un error visible en el admin.
 
 ## Seguridad y operación
 

@@ -16,7 +16,7 @@
 - 선언된 종속성: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - Python, Django, Wagtail의 호환성은 함께 확인해야 합니다. 최소 종속성 버전은 모든 버전의 지원을 의미하지 않습니다.
 
-패키지 메타데이터는 Wagtail >= 6.0을 선언하지만 최소 의존성은 모든 버전의 호환성을 입증하지 않습니다. 이 아카이브에는 모든 Django/Wagtail 조합을 다루는 완전한 자동 테스트 매트릭스가 없습니다. 운영 환경을 업그레이드하기 전에 정확한 버전, 데이터베이스, 저장소 백엔드 및 배포 설정을 스테이징에서 검증하세요.
+패키지 메타데이터는 최소 `wagtail>=6.0`을 선언합니다. 이는 하한선이지 검증된 매트릭스가 아닙니다. 소스 패키지에는 플러그인의 기능 회귀 테스트 스위트가 포함되어 있으며, 대상 스택 Wagtail 8.1 / Django 6.0.9 / Python 3.14는 실행으로 확인되었습니다(플러그인 15/15, 프로젝트 통합 160/160). 이는 `wagtail>=6.0`의 모든 조합이 테스트되었다는 뜻이 아닙니다 — 운영 환경을 업그레이드하기 전에 정확한 버전, 데이터베이스, 저장소 백엔드 및 배포 설정을 검증하세요.
 
 ## 설치
 
@@ -64,7 +64,7 @@ class ArticlePage(Page):
 
 ### 중요한 참고 사항
 
-`ProseEditorField`에서 `"Image": True`를 활성화하세요. 엔드포인트는 기본적으로 Wagtail `width-1200` rendition URL을 반환하고 해당 이미지의 `choose` 권한을 확인합니다. 크기는 `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`로 변경할 수 있습니다. Rendition은 추가 파일을 생성할 수 있으며, 생성 실패 시 오류를 기록하고 마지막 수단으로 원본 URL을 사용합니다.
+`ProseEditorField`에서 `"Image": True`를 활성화하세요. 엔드포인트는 기본적으로 Wagtail `width-1200` rendition URL을 반환하고 해당 이미지의 `choose` 권한을 확인합니다. 크기는 `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`로 변경할 수 있습니다. Rendition은 추가 파일을 생성할 수 있습니다. 실패 시 동작은 fail closed입니다: 오류를 기록하고 엔드포인트는 URL 없이 제어된 5xx JSON을 반환하며, 원본 URL은 절대 폴백으로 사용되지 않습니다. 에디터 삽입 핸들러도 chooser 응답의 URL을 사용하지 않습니다: 엔드포인트 실패 시 아무것도 삽입하지 않고 관리자 화면에 가시적 오류를 표시합니다.
 
 ## 보안 및 운영 지침
 

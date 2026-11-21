@@ -16,7 +16,7 @@
 - Zadeklarowane zależności: `Wagtail >= 6.0; django-prose-editor >= 0.26`.
 - Zgodność Pythona, Django i Wagtail należy sprawdzać łącznie. Minimalna zależność pakietu nie potwierdza obsługi każdej wersji.
 
-Metadane deklarują Wagtail >= 6.0, ale minimalna zależność nie dowodzi zgodności. Archiwum nie zawiera pełnej automatycznej macierzy wszystkich kombinacji Django/Wagtail. Przed aktualizacją produkcji sprawdź dokładne wersje, bazę danych, backend plików i konfigurację wdrożenia na środowisku testowym.
+Metadane deklarują minimum `wagtail>=6.0`; to dolna granica, a nie przetestowana macierz. Pakiet źródłowy zawiera funkcjonalną suitę testów regresyjnych pluginu, a docelowy stack Wagtail 8.1 / Django 6.0.9 / Python 3.14 jest potwierdzony przebiegami (plugin 15/15, integracja projektu 160/160). Nie oznacza to, że przetestowano wszystkie kombinacje `wagtail>=6.0` — przed aktualizacją produkcji sprawdź dokładne wersje, bazę danych, backend plików i konfigurację wdrożenia.
 
 ## Instalacja
 
@@ -64,7 +64,7 @@ Pełną tabelę ustawień znajdziesz w [angielskim README](README.md).
 
 ### Ważne uwagi
 
-W `ProseEditorField` włącz `"Image": True`. Domyślnie endpoint zwraca rendition Wagtail `width-1200` i sprawdza uprawnienie `choose` dla konkretnego obrazu. Rozmiar można zmienić przez `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Rendition może utworzyć dodatkowy plik; przy błędzie endpoint zapisuje wyjątek w logu i używa URL oryginału jako rozwiązania awaryjnego.
+W `ProseEditorField` włącz `"Image": True`. Domyślnie endpoint zwraca rendition Wagtail `width-1200` i sprawdza uprawnienie `choose` dla konkretnego obrazu. Rozmiar można zmienić przez `WAGTAIL_PROSE_EDITOR_IMAGES_RENDITION_SPEC`. Rendition może utworzyć dodatkowy plik. Przy błędzie zachowanie jest fail closed: wyjątek trafia do logu, a endpoint zwraca kontrolowany JSON 5xx bez jakiegokolwiek URL; URL oryginału nigdy nie jest używany awaryjnie. Handler wstawiania w edytorze również nie używa URL-i z odpowiedzi chooser: przy błędzie endpointu nic nie jest wstawiane, a w panelu admina pojawia się widoczny błąd.
 
 ## Bezpieczeństwo i eksploatacja
 
